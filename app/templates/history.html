@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiabPredict - Historique</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+            flex-wrap: wrap;
+        }
+        .nav-links a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.05em;
+            padding: 10px 20px;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+        .nav-links a:hover { background: #f0f4ff; }
+        .nav-links a.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            font-size: 2em;
+            color: #2d3748;
+        }
+        .header h1 span {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header .subtitle { color: #718096; font-size: 1em; }
+        
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .btn-print button {
+            padding: 10px 25px;
+            background: #2d3748;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-print button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .total-info {
+            font-size: 0.95em;
+            color: #718096;
+        }
+        .total-info strong { color: #2d3748; }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 0.85em;
+        }
+        th, td {
+            padding: 10px 6px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+        tr:hover { background: #f7fafc; }
+        .status-0 { color: #48bb78; font-weight: bold; }
+        .status-1 { color: #fc8181; font-weight: bold; }
+        
+        .btn-actions {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+        }
+        .btn-actions a {
+            padding: 5px 10px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.85em;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: inline-block;
+            color: white;
+        }
+        .btn-actions a:hover {
+            transform: scale(1.1);
+        }
+        .btn-report {
+            background: #48bb78;
+        }
+        .btn-report:hover {
+            background: #38a169;
+        }
+        .btn-edit {
+            background: #4299e1;
+        }
+        .btn-edit:hover {
+            background: #3182ce;
+        }
+        .btn-delete {
+            background: #fc8181;
+        }
+        .btn-delete:hover {
+            background: #e53e3e;
+        }
+        
+        .btn-back {
+            display: inline-block;
+            padding: 10px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            margin-top: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-back:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+        
+        .scroll-container { max-height: 500px; overflow-y: auto; }
+        
+        .stats-mini {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 15px 0 20px 0;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 10px;
+            flex-wrap: wrap;
+        }
+        .stats-mini span { font-weight: 600; }
+        .stats-mini .diab { color: #fc8181; }
+        .stats-mini .non { color: #48bb78; }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 10px;
+            flex-wrap: wrap;
+        }
+        .pagination a {
+            padding: 8px 16px;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+        }
+        .pagination a:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        .pagination .active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        .pagination .disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .pagination .info {
+            color: #718096;
+            font-size: 0.9em;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            color: #a0aec0;
+            font-size: 0.9em;
+        }
+        
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; }
+            .nav-links { display: none; }
+            .stats-mini { display: none; }
+            .btn-back { display: none; }
+            .btn-print { display: none; }
+            .top-bar { display: none; }
+            .pagination { display: none; }
+            button { display: none; }
+            .footer { display: none; }
+            .btn-actions { display: none; }
+            th { background: #667eea !important; color: white !important; }
+            .scroll-container { max-height: none; overflow-y: visible; }
+        }
+        
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            table { font-size: 0.65em; }
+            th, td { padding: 4px 2px; }
+            .stats-mini { gap: 10px; font-size: 0.8em; }
+            .nav-links a { font-size: 0.8em; padding: 6px 10px; }
+            .btn-actions a { font-size: 0.7em; padding: 3px 6px; }
+            .top-bar { flex-direction: column; align-items: stretch; }
+            .pagination a { padding: 5px 10px; font-size: 0.8em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <div class="nav-links">
+            <a href="/"> Accueil</a>
+            <a href="/form"> Formulaire</a>
+            <a href="/history" class="active"> Historique</a>
+            <a href="/stats"> Statistiques</a>
+        </div>
+        
+        <!-- Header -->
+        <div class="header">
+            <h1> <span>Historique des prédictions</span></h1>
+            <p class="subtitle">Consultez toutes les prédictions effectuées</p>
+        </div>
+        
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="total-info">
+                Total : <strong>{{ total }}</strong> prédictions
+            </div>
+            <div class="btn-print">
+                <button onclick="window.print()"> Imprimer</button>
+            </div>
+        </div>
+        
+        <!-- Statistiques mini -->
+        {% if stats %}
+        <div class="stats-mini">
+            <span>Total : <strong>{{ stats.total_predictions }}</strong></span>
+            <span class="diab">Diabétiques : <strong>{{ stats.diabetics }}</strong></span>
+            <span class="non">Non-diabétiques : <strong>{{ stats.non_diabetics }}</strong></span>
+            <span>Taux : <strong>{{ "%.1f"|format(stats.diabetes_rate) }}%</strong></span>
+        </div>
+        {% endif %}
+        
+        <!-- Tableau -->
+        <div class="scroll-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Postnom</th>
+                        <th>Gross.</th>
+                        <th>Glucose</th>
+                        <th>Pression</th>
+                        <th>Peau</th>
+                        <th>Insuline</th>
+                        <th>IMC</th>
+                        <th>DPF</th>
+                        <th>Âge</th>
+                        <th>Résultat</th>
+                        <th>Probabilité</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pred in predictions %}
+                    <tr>
+                        <td>{{ pred.prediction_id }}</td>
+                        <td><strong>{{ pred.nom }}</strong></td>
+                        <td>{{ pred.postnom }}</td>
+                        <td>{{ pred.pregnancies }}</td>
+                        <td>{{ pred.glucose }}</td>
+                        <td>{{ pred.blood_pressure }}</td>
+                        <td>{{ pred.skin_thickness }}</td>
+                        <td>{{ pred.insulin }}</td>
+                        <td>{{ pred.bmi }}</td>
+                        <td>{{ pred.dpf }}</td>
+                        <td>{{ pred.age }}</td>
+                        <td class="status-{{ pred.prediction }}">
+                            {% if pred.prediction == 0 %} Non-diabétique{% else %} Diabétique{% endif %}
+                        </td>
+                        <td>{{ "%.2f"|format(pred.probability*100) }}%</td>
+                        <td>{{ pred.prediction_date[:19] }}</td>
+                        <td>
+                            <div class="btn-actions">
+                                <a href="/rapport/{{ pred.patient_id }}" class="btn-report" title="Voir rapport">Rapport</a>
+                                <a href="/edit/{{ pred.prediction_id }}" class="btn-edit" title="Modifier">modifier</a>
+                                <a href="/delete/{{ pred.prediction_id }}" class="btn-delete" title="Supprimer" 
+                                   onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette prédiction ?')">Supprimer</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination -->
+        {% if total_pages > 1 %}
+        <div class="pagination">
+            {% if page > 1 %}
+            <a href="{{ url_for('history', page=page-1) }}">◀ Précédent</a>
+            {% else %}
+            <a class="disabled">◀ Précédent</a>
+            {% endif %}
+            
+            {% for p in range(1, total_pages + 1) %}
+                {% if p == page %}
+                <a class="active">{{ p }}</a>
+                {% elif p <= 3 or p > total_pages - 3 or p == total_pages %}
+                <a href="{{ url_for('history', page=p) }}">{{ p }}</a>
+                {% elif p == 4 and page > 5 %}
+                <span>…</span>
+                {% elif p == total_pages - 3 and page < total_pages - 4 %}
+                <span>…</span>
+                {% endif %}
+            {% endfor %}
+            
+            {% if page < total_pages %}
+            <a href="{{ url_for('history', page=page+1) }}">Suivant ▶</a>
+            {% else %}
+            <a class="disabled">Suivant ▶</a>
+            {% endif %}
+            
+            <span class="info">Page {{ page }} / {{ total_pages }}</span>
+        </div>
+        {% endif %}
+        
+        <!-- Retour -->
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="/" class="btn-back">← Retour à l'accueil</a>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p>Projet réalisé par : MUSHOBOZI MUNGOBIJIRA Affable & Amani Sukuwabo Bravo</p>
+            <p>Modèle : XGBoost - Accuracy 87.01%</p>
+        </div>
+    </div>
+</body>
+</html>

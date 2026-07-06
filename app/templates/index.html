@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiabPredict - Accueil</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 1000px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-top: 20px;
+        }
+        
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+            flex-wrap: wrap;
+        }
+        .nav-links a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.05em;
+            padding: 10px 20px;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+        .nav-links a:hover { background: #f0f4ff; }
+        .nav-links a.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+        .header h1 span {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header .subtitle {
+            color: #718096;
+            font-size: 1.2em;
+        }
+        
+        .banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        .banner h2 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+        .banner p {
+            font-size: 1.1em;
+            opacity: 0.95;
+            line-height: 1.8;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .banner .icon { font-size: 3em; display: block; margin-bottom: 15px; }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .feature-card {
+            background: #f7fafc;
+            border-radius: 15px;
+            padding: 25px 20px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        .feature-card:hover { transform: translateY(-5px); }
+        .feature-card .icon { font-size: 2.5em; margin-bottom: 10px; }
+        .feature-card h3 { color: #2d3748; margin-bottom: 8px; }
+        .feature-card p { color: #718096; font-size: 0.95em; line-height: 1.6; }
+        
+        .btn-start {
+            display: inline-block;
+            padding: 18px 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 1.2em;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        .btn-start:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
+        }
+        .btn-start .arrow { margin-left: 10px; }
+        .text-center { text-align: center; }
+        
+        .stats-mini {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+        .stat-card {
+            background: #f7fafc;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+        }
+        .stat-card .number { font-size: 1.8em; font-weight: 700; color: #2d3748; }
+        .stat-card .label { color: #718096; font-size: 0.85em; margin-top: 5px; }
+        .stat-card.diabetic .number { color: #fc8181; }
+        .stat-card.non-diabetic .number { color: #48bb78; }
+        .stat-card.total .number { color: #667eea; }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            color: #a0aec0;
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 768px) {
+            .features { grid-template-columns: 1fr; }
+            .stats-mini { grid-template-columns: 1fr 1fr; }
+            .header h1 { font-size: 1.8em; }
+            .banner { padding: 25px; }
+            .banner h2 { font-size: 1.4em; }
+            .btn-start { padding: 14px 30px; font-size: 1em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <div class="nav-links">
+            <a href="/" class="active"> Accueil</a>
+            <a href="/form"> Formulaire</a>
+            <a href="/history"> Historique</a>
+            <a href="/stats"> Statistiques</a>
+            <a href="/rapport_global"> Rapport Global</a>
+        </div>
+        
+        <!-- Header -->
+        <div class="header">
+            <h1>Bienvenue sur <span>DiabPredict</span></h1>
+            <p class="subtitle">Prédiction du diabète par Intelligence Artificielle</p>
+        </div>
+        
+        <!-- Banner -->
+        <div class="banner">
+            <span class="icon">🙌</span>
+            <h2>Prédisez le diabète en quelques clics</h2>
+            <p>
+                Notre application utilise un modèle d'intelligence artificielle (XGBoost) 
+                entraîné sur des milliers de données médicales pour prédire avec une 
+                précision de <strong>87%</strong> le risque de diabète chez un patient.
+            </p>
+        </div>
+        
+        <!-- Features -->
+        <div class="features">
+            <div class="feature-card">
+                <div class="icon"></div>
+                <h3>IA Puissante</h3>
+                <p>Modèle XGBoost avec une précision de 87% pour des prédictions fiables</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon"></div>
+                <h3>Analyse Complète</h3>
+                <p>Évaluation basée sur 8 paramètres médicaux essentiels</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon"></div>
+                <h3>Historique Sauvegardé</h3>
+                <p>Toutes vos prédictions sont enregistrées pour un suivi personnalisé</p>
+            </div>
+        </div>
+        
+        <!-- Statistiques mini -->
+        {% if stats %}
+        <div class="stats-mini">
+            <div class="stat-card total">
+                <div class="number">{{ stats.total_predictions }}</div>
+                <div class="label">Total prédictions</div>
+            </div>
+            <div class="stat-card diabetic">
+                <div class="number">{{ stats.diabetics }}</div>
+                <div class="label">Diabétiques</div>
+            </div>
+            <div class="stat-card non-diabetic">
+                <div class="number">{{ stats.non_diabetics }}</div>
+                <div class="label">Non-diabétiques</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">{{ "%.1f"|format(stats.diabetes_rate) }}%</div>
+                <div class="label">Taux de diabète</div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <!-- Bouton Commencer -->
+        <div class="text-center">
+            <a href="/form" class="btn-start">
+                Commencer la prédiction <span class="arrow">→</span>
+            </a>
+        </div>
+        
+        <div class="footer">
+            <p>Projet réalisé par : MUSHOBOZI MUNGOBIJIRA Affable & Amani Sukuwabo Bravo</p>
+            <p>Modèle : XGBoost - Accuracy 87.01%</p>
+        </div>
+    </div>
+</body>
+</html>

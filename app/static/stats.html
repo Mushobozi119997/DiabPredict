@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistiques</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { text-align: center; color: #2d3748; }
+        .nav-links { text-align: center; margin: 20px 0; }
+        .nav-links a { color: #667eea; text-decoration: none; margin: 0 15px; font-weight: 500; }
+        .nav-links a:hover { text-decoration: underline; }
+        .stat-card {
+            background: #f7fafc;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .stat-card .label { font-weight: 600; color: #2d3748; }
+        .stat-card .value { font-size: 1.8em; font-weight: 700; }
+        .stat-card .value.green { color: #48bb78; }
+        .stat-card .value.red { color: #fc8181; }
+        .stat-card .value.blue { color: #667eea; }
+        .btn-back {
+            display: inline-block;
+            padding: 10px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        .btn-back:hover { opacity: 0.9; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1> Statistiques</h1>
+        
+        <div class="nav-links">
+            <a href="/"> Accueil</a>
+            <a href="/history"> Historique</a>
+            <a href="/stats"> Statistiques</a>
+        </div>
+        
+        {% if stats %}
+        <div class="stat-card">
+            <span class="label">Total des prédictions</span>
+            <span class="value blue">{{ stats.total_predictions }}</span>
+        </div>
+        <div class="stat-card">
+            <span class="label">Patients diabétiques</span>
+            <span class="value red">{{ stats.diabetics }}</span>
+        </div>
+        <div class="stat-card">
+            <span class="label">Patients non-diabétiques</span>
+            <span class="value green">{{ stats.non_diabetics }}</span>
+        </div>
+        <div class="stat-card">
+            <span class="label">Taux de diabète</span>
+            <span class="value blue">{{ "%.1f"|format(stats.diabetes_rate) }}%</span>
+        </div>
+        {% endif %}
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="/" class="btn-back">← Retour à l'accueil</a>
+        </div>
+    </div>
+</body>
+</html>

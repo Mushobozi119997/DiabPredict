@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="C:/Users/Pigeon/Desktop/Projet_Diabete_App/predictions.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="2649"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><table title="history" custom_title="0" dock_id="1" table="4,7:mainhistory"/><dock_state state="000000ff00000000fd00000001000000020000023500000213fc0100000001fb000000160064006f0063006b00420072006f00770073006500310100000000000002350000011b00ffffff000002350000000000000004000000040000000800000008fc00000000"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="history" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="29"/><column index="2" value="67"/><column index="3" value="76"/><column index="4" value="51"/><column index="5" value="94"/><column index="6" value="90"/><column index="7" value="46"/><column index="8" value="39"/><column index="9" value="31"/><column index="10" value="39"/><column index="11" value="64"/><column index="12" value="68"/><column index="13" value="76"/><column index="14" value="156"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1*">-- ============================================================
+-- BASE DE DONNÉES : PRÉDICTION DU DIABÈTE
+-- ============================================================
+
+-- 1. Table des patients
+CREATE TABLE patients (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    pregnancies REAL,
+    glucose REAL,
+    blood_pressure REAL,
+    skin_thickness REAL,
+    insulin REAL,
+    bmi REAL,
+    dpf REAL,
+    age REAL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 2. Table des prédictions
+CREATE TABLE predictions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    patient_id INTEGER,
+    prediction INTEGER,
+    probability REAL,
+    model_used TEXT DEFAULT 'XGBoost',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE CASCADE
+);
+
+-- 3. Table d'historique
+CREATE TABLE history (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    patient_id INTEGER,
+    pregnancies REAL,
+    glucose REAL,
+    blood_pressure REAL,
+    skin_thickness REAL,
+    insulin REAL,
+    bmi REAL,
+    dpf REAL,
+    age REAL,
+    prediction INTEGER,
+    probability REAL,
+    model_used TEXT DEFAULT 'XGBoost',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE CASCADE
+);
+
+-- 4. Index
+CREATE INDEX idx_predictions_patient ON predictions(patient_id);
+CREATE INDEX idx_history_created ON history(created_at DESC);
+CREATE INDEX idx_patients_created ON patients(created_at DESC);
+
+-- 5. Vue des prédictions complètes
+CREATE VIEW v_predictions_complete AS
+SELECT 
+    p.id as prediction_id,
+    pat.id as patient_id,
+    pat.pregnancies,
+    pat.glucose,
+    pat.blood_pressure,
+    pat.skin_thickness,
+    pat.insulin,
+    pat.bmi,
+    pat.dpf,
+    pat.age,
+    p.prediction,
+    p.probability,
+    p.model_used,
+    p.created_at as prediction_date,
+    CASE 
+        WHEN p.prediction = 0 THEN 'Non-diabétique'
+        ELSE 'Diabétique'
+    END as result_label
+FROM predictions p
+JOIN patients pat ON p.patient_id = pat.id
+ORDER BY p.created_at DESC;
+
+-- 6. Vue des statistiques
+CREATE VIEW v_statistics AS
+SELECT 
+    (SELECT COUNT(*) FROM predictions) as total_predictions,
+    (SELECT COUNT(*) FROM patients) as total_patients,
+    (SELECT COUNT(*) FROM predictions WHERE prediction = 1) as diabetics,
+    (SELECT COUNT(*) FROM predictions WHERE prediction = 0) as non_diabetics,
+    ROUND((SELECT COUNT(*) FROM predictions WHERE prediction = 1) * 100.0 / 
+          NULLIF((SELECT COUNT(*) FROM predictions), 0), 2) as diabetes_rate;
+
+-- 7. Trigger pour sauvegarde automatique
+CREATE TRIGGER after_prediction_insert 
+AFTER INSERT ON predictions
+BEGIN
+    INSERT INTO history (
+        patient_id, pregnancies, glucose, blood_pressure, skin_thickness,
+        insulin, bmi, dpf, age, prediction, probability, model_used
+    )
+    SELECT 
+        p.id, p.pregnancies, p.glucose, p.blood_pressure, p.skin_thickness,
+        p.insulin, p.bmi, p.dpf, p.age, 
+        NEW.prediction, NEW.probability, NEW.model_used
+    FROM patients p
+    WHERE p.id = NEW.patient_id;
+END;
+
+-- 8. Données de test
+INSERT INTO patients (pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, dpf, age)
+VALUES 
+    (2, 120, 70, 25, 80, 28.5, 0.5, 35),
+    (1, 85, 65, 20, 60, 25.0, 0.3, 28),
+    (5, 150, 80, 30, 120, 35.0, 0.8, 45);
+
+-- 9. Prédictions de test
+INSERT INTO predictions (patient_id, prediction, probability)
+VALUES 
+    (1, 0, 0.25),
+    (2, 0, 0.10),
+    (3, 1, 0.85);
+
+-- 10. Vérification
+SELECT ' Base de données créée avec succès !' as message;
+SELECT * FROM v_statistics;</sql><current_tab id="0"/></tab_sql></sqlb_project>

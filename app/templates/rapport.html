@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rapport Patient - DiabPredict</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f4ff;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            margin-top: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+        }
+        .header .logo { font-size: 3em; margin-bottom: 5px; }
+        .header h1 { color: #2d3748; font-size: 2em; }
+        .header h1 span {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header .subtitle { color: #718096; font-size: 1.1em; }
+        
+        .rapport-id { text-align: right; color: #a0aec0; font-size: 0.85em; margin-bottom: 15px; }
+        
+        .patient-card {
+            background: #f7fafc;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 1px solid #e2e8f0;
+        }
+        .patient-card h2 {
+            color: #2d3748;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 12px;
+            margin-bottom: 18px;
+            font-size: 1.2em;
+        }
+        .patient-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .patient-info .info-item {
+            padding: 10px 12px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .patient-info .info-item .label { color: #718096; font-weight: 500; font-size: 0.9em; }
+        .patient-info .info-item .value { color: #2d3748; font-weight: 600; }
+        
+        .result-box {
+            text-align: center;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        .result-box.success { background: #f0fff4; border: 2px solid #48bb78; }
+        .result-box.danger { background: #fff5f5; border: 2px solid #fc8181; }
+        .result-box .prediction { font-size: 2em; font-weight: 700; }
+        .result-box .probability { font-size: 1.2em; color: #4a5568; margin-top: 8px; }
+        .result-box .advice { margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.7); border-radius: 10px; }
+        
+        .btn-print {
+            text-align: center;
+            margin: 20px 0 10px 0;
+        }
+        .btn-print button {
+            padding: 12px 35px;
+            background: #2d3748;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-print button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .btn-back {
+            padding: 12px 35px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+        .btn-back:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4); color: white; }
+        
+        .btn-group {
+            text-align: center;
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            color: #a0aec0;
+            font-size: 0.85em;
+        }
+        .footer strong { color: #667eea; }
+        
+        @media print {
+            body { background: white !important; padding: 0 !important; }
+            .container { box-shadow: none !important; padding: 20px !important; border-radius: 0 !important; }
+            .btn-group { display: none !important; }
+            .btn-print { display: none !important; }
+            .no-print { display: none !important; }
+            .patient-card { border: 1px solid #ddd !important; }
+            .header { border-bottom: 2px solid #667eea !important; }
+        }
+        
+        @media (max-width: 600px) {
+            .container { padding: 20px; }
+            .patient-info { grid-template-columns: 1fr; }
+            .header h1 { font-size: 1.5em; }
+            .result-box .prediction { font-size: 1.5em; }
+            .btn-group { flex-direction: column; align-items: center; }
+            .btn-print button, .btn-back { width: 100%; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo"></div>
+            <h1>Diab<span>Predict</span></h1>
+            <p class="subtitle">Rapport de prédiction du diabète</p>
+        </div>
+        
+        <div class="rapport-id">Rapport généré le : {{ date }}</div>
+        
+        <div class="patient-card">
+            <h2> Informations du patient</h2>
+            <div class="patient-info">
+                <div class="info-item"><span class="label">Nom</span><span class="value">{{ nom }}</span></div>
+                <div class="info-item"><span class="label">Postnom</span><span class="value">{{ postnom }}</span></div>
+                <div class="info-item"><span class="label">Âge</span><span class="value">{{ age }} ans</span></div>
+                <div class="info-item"><span class="label">IMC</span><span class="value">{{ bmi }} kg/m²</span></div>
+                <div class="info-item"><span class="label">Glucose</span><span class="value">{{ glucose }} mg/dL</span></div>
+                <div class="info-item"><span class="label">Pression</span><span class="value">{{ blood_pressure }} mm Hg</span></div>
+                <div class="info-item"><span class="label">Grossesses</span><span class="value">{{ pregnancies }}</span></div>
+                <div class="info-item"><span class="label">Insuline</span><span class="value">{{ insulin }} mu U/ml</span></div>
+                <div class="info-item"><span class="label">DPF</span><span class="value">{{ dpf }}</span></div>
+                <div class="info-item"><span class="label">Date</span><span class="value">{{ date }}</span></div>
+            </div>
+        </div>
+        
+        <div class="result-box {{ result_class }}">
+            <div class="prediction" style="color: {{ color }};">{{ prediction }}</div>
+            <div class="probability">Probabilité : {{ probability }}</div>
+            <div class="advice"> {{ advice }}</div>
+        </div>
+        
+        <div class="footer">
+            <p>Projet réalisé par : <strong>MUSHOBOZI MUNGOBIJIRA Affable</strong> & <strong>Amani Sukuwabo Bravo</strong></p>
+            <p>Modèle : XGBoost - Précision 87.01%</p>
+        </div>
+        
+        <div class="btn-group no-print">
+            <div class="btn-print">
+                <button onclick="window.print()"> Imprimer le rapport</button>
+            </div>
+            <a href="/history" class="btn-back">← Retour à l'historique</a>
+        </div>
+    </div>
+</body>
+</html>

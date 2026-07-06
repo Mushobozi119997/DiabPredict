@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiabPredict - Modifier</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-top: 20px;
+        }
+        
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+            flex-wrap: wrap;
+        }
+        .nav-links a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.05em;
+            padding: 10px 20px;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+        .nav-links a:hover { background: #f0f4ff; }
+        .nav-links a.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        h1 { text-align: center; color: #2d3748; margin-bottom: 25px; }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { font-weight: 600; color: #2d3748; margin-bottom: 5px; font-size: 0.9em; }
+        .form-group input {
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus { outline: none; border-color: #667eea; }
+        
+        .btn-group {
+            grid-column: 1 / -1;
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .btn-save {
+            flex: 1;
+            padding: 15px;
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .btn-save:hover { transform: translateY(-2px); }
+        .btn-cancel {
+            flex: 1;
+            padding: 15px;
+            background: #e2e8f0;
+            color: #2d3748;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: transform 0.2s;
+        }
+        .btn-cancel:hover { transform: translateY(-2px); background: #cbd5e0; }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            color: #a0aec0;
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 600px) {
+            .container { padding: 20px; }
+            .form-grid { grid-template-columns: 1fr; }
+            .btn-group { flex-direction: column; }
+            .nav-links a { font-size: 0.8em; padding: 6px 12px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <div class="nav-links">
+            <a href="/"> Accueil</a>
+            <a href="/form"> Formulaire</a>
+            <a href="/history" class="active"> Historique</a>
+            <a href="/stats"> Statistiques</a>
+        </div>
+        
+        <h1> Modifier le patient</h1>
+        
+        <form method="POST">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="nom">Nom</label>
+                    <input type="text" id="nom" name="nom" value="{{ patient.nom }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="postnom">Postnom</label>
+                    <input type="text" id="postnom" name="postnom" value="{{ patient.postnom }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="pregnancies">Grossesses</label>
+                    <input type="number" step="1" id="pregnancies" name="pregnancies" value="{{ patient.pregnancies }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="glucose">Glucose</label>
+                    <input type="number" step="0.01" id="glucose" name="glucose" value="{{ patient.glucose }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="blood_pressure">Pression</label>
+                    <input type="number" step="0.01" id="blood_pressure" name="blood_pressure" value="{{ patient.blood_pressure }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="skin_thickness">Peau</label>
+                    <input type="number" step="0.01" id="skin_thickness" name="skin_thickness" value="{{ patient.skin_thickness }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="insulin">Insuline</label>
+                    <input type="number" step="0.01" id="insulin" name="insulin" value="{{ patient.insulin }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="bmi">IMC</label>
+                    <input type="number" step="0.01" id="bmi" name="bmi" value="{{ patient.bmi }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="dpf">DPF</label>
+                    <input type="number" step="0.001" id="dpf" name="dpf" value="{{ patient.dpf }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="age">Âge</label>
+                    <input type="number" step="1" id="age" name="age" value="{{ patient.age }}" required>
+                </div>
+                <div class="btn-group">
+                    <button type="submit" class="btn-save"> Sauvegarder</button>
+                    <a href="/history" class="btn-cancel"> Annuler</a>
+                </div>
+            </div>
+        </form>
+        
+        <div class="footer">
+            <p>Projet réalisé par : MUSHOBOZI MUNGOBIJIRA Affable & Amani Sukuwabo Bravo</p>
+            <p>Modèle : XGBoost - Accuracy 87.01%</p>
+        </div>
+    </div>
+</body>
+</html>

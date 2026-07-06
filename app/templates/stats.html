@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiabPredict - Statistiques</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+            flex-wrap: wrap;
+        }
+        .nav-links a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.05em;
+            padding: 10px 20px;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+        .nav-links a:hover { background: #f0f4ff; }
+        .nav-links a.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .header h1 {
+            font-size: 2em;
+            color: #2d3748;
+        }
+        .header h1 span {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header .subtitle { color: #718096; font-size: 1em; }
+        
+        .stat-card {
+            background: #f7fafc;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+        .stat-card:hover { transform: translateX(5px); }
+        .stat-card .label { font-weight: 600; color: #2d3748; }
+        .stat-card .value { font-size: 1.8em; font-weight: 700; }
+        .stat-card .value.green { color: #48bb78; }
+        .stat-card .value.red { color: #fc8181; }
+        .stat-card .value.blue { color: #667eea; }
+        
+        .btn-back {
+            display: inline-block;
+            padding: 10px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            margin-top: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-back:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            color: #a0aec0;
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 600px) {
+            .container { padding: 20px; }
+            .header h1 { font-size: 1.5em; }
+            .stat-card { flex-direction: column; text-align: center; }
+            .stat-card .value { font-size: 1.5em; }
+            .nav-links a { font-size: 0.85em; padding: 8px 12px; }
+        }
+    
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; }
+            .nav-links { display: none; }
+            .btn-back { display: none; }
+            button { display: none; }
+            .footer { display: none; }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="nav-links">
+            <a href="/"> Accueil</a>
+            <a href="/form"> Formulaire</a>
+            <a href="/history"> Historique</a>
+            <a href="/stats" class="active"> Statistiques</a>
+        </div>
+        
+        <div class="header">
+            <h1> <span>Statistiques</span></h1>
+            <p class="subtitle">Vue d'ensemble des prédictions effectuées</p>
+        </div>
+        
+        {% if stats %}
+        
+        <div style="text-align: right; margin: 10px 0;">
+            <button onclick="window.print()" style="
+                padding: 10px 25px;
+                background: #2d3748;
+                color: white;
+                border: none;
+                border-radius: 10px;
+                font-size: 1em;
+                font-weight: 600;
+                cursor: pointer;
+                transition: transform 0.2s, box-shadow 0.2s;
+            " onmouseover="this.style.transform='translateY(-2px)'" 
+               onmouseout="this.style.transform='translateY(0)'">
+                 Imprimer les statistiques
+            </button>
+        </div>
+
+        <div class="stat-card">
+            <span class="label">Total des prédictions</span>
+            <span class="value blue">{{ stats.total_predictions }}</span>
+        </div>
+        
+        <div style="text-align: right; margin: 10px 0;">
+            <button onclick="window.print()" style="
+                padding: 10px 25px;
+                background: #2d3748;
+                color: white;
+                border: none;
+                border-radius: 10px;
+                font-size: 1em;
+                font-weight: 600;
+                cursor: pointer;
+                transition: transform 0.2s, box-shadow 0.2s;
+            " onmouseover="this.style.transform='translateY(-2px)'" 
+               onmouseout="this.style.transform='translateY(0)'">
+                 Imprimer les statistiques
+            </button>
+        </div>
+
+        <div class="stat-card">
+            <span class="label">Patients diabétiques</span>
+            <span class="value red">{{ stats.diabetics }}</span>
+        </div>
+        
+        <div style="text-align: right; margin: 10px 0;">
+            <button onclick="window.print()" style="
+                padding: 10px 25px;
+                background: #2d3748;
+                color: white;
+                border: none;
+                border-radius: 10px;
+                font-size: 1em;
+                font-weight: 600;
+                cursor: pointer;
+                transition: transform 0.2s, box-shadow 0.2s;
+            " onmouseover="this.style.transform='translateY(-2px)'" 
+               onmouseout="this.style.transform='translateY(0)'">
+                 Imprimer les statistiques
+            </button>
+        </div>
+
+        <div class="stat-card">
+            <span class="label">Patients non-diabétiques</span>
+            <span class="value green">{{ stats.non_diabetics }}</span>
+        </div>
+        
+        <div style="text-align: right; margin: 10px 0;">
+            <button onclick="window.print()" style="
+                padding: 10px 25px;
+                background: #2d3748;
+                color: white;
+                border: none;
+                border-radius: 10px;
+                font-size: 1em;
+                font-weight: 600;
+                cursor: pointer;
+                transition: transform 0.2s, box-shadow 0.2s;
+            " onmouseover="this.style.transform='translateY(-2px)'" 
+               onmouseout="this.style.transform='translateY(0)'">
+                 Imprimer les statistiques
+            </button>
+        </div>
+
+        <div class="stat-card">
+            <span class="label">Taux de diabète</span>
+            <span class="value blue">{{ "%.1f"|format(stats.diabetes_rate) }}%</span>
+        </div>
+        {% else %}
+        <div style="text-align: center; padding: 40px; color: #718096;">
+            <p> Aucune statistique disponible</p>
+            <p style="font-size: 0.9em; margin-top: 10px;">Effectuez une première prédiction pour voir les statistiques</p>
+        </div>
+        {% endif %}
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="/" class="btn-back">← Retour à l'accueil</a>
+        </div>
+        
+        <div class="footer">
+            <p>Projet réalisé par : MUSHOBOZI MUNGOBIJIRA Affable & Amani Sukuwabo Bravo</p>
+            <p>Modèle : XGBoost - Accuracy 87.01%</p>
+        </div>
+    </div>
+</body>
+</html>

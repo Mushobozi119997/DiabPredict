@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiabPredict - Rapport Global</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f4ff;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            margin-top: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+        }
+        .header .logo { font-size: 3em; margin-bottom: 5px; }
+        .header h1 { color: #2d3748; font-size: 2em; }
+        .header h1 span {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header .subtitle { color: #718096; font-size: 1.1em; }
+        
+        .rapport-id { text-align: right; color: #a0aec0; font-size: 0.85em; margin-bottom: 15px; }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: #f7fafc;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+        .stat-card .number { font-size: 2em; font-weight: 700; color: #2d3748; }
+        .stat-card .label { color: #718096; font-size: 0.85em; margin-top: 5px; }
+        .stat-card.diabetic .number { color: #fc8181; }
+        .stat-card.non-diabetic .number { color: #48bb78; }
+        .stat-card.total .number { color: #667eea; }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 0.85em;
+        }
+        th, td {
+            padding: 10px 6px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+        }
+        tr:hover { background: #f7fafc; }
+        .status-0 { color: #48bb78; font-weight: bold; }
+        .status-1 { color: #fc8181; font-weight: bold; }
+        
+        .btn-group {
+            text-align: center;
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .btn-print {
+            padding: 12px 35px;
+            background: #2d3748;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-print:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .btn-back {
+            padding: 12px 35px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+        .btn-back:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4); color: white; }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            color: #a0aec0;
+            font-size: 0.85em;
+        }
+        .footer strong { color: #667eea; }
+        
+        .total-info {
+            text-align: right;
+            font-size: 0.95em;
+            color: #718096;
+            margin: 10px 0;
+        }
+        
+        @media print {
+            body { background: white !important; padding: 0 !important; }
+            .container { box-shadow: none !important; padding: 20px !important; border-radius: 0 !important; }
+            .btn-group { display: none !important; }
+            .btn-print { display: none !important; }
+            .no-print { display: none !important; }
+            .header { border-bottom: 2px solid #667eea !important; }
+            .stat-card { border: 1px solid #ddd !important; }
+        }
+        
+        @media (max-width: 768px) {
+            .container { padding: 20px; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            table { font-size: 0.7em; }
+            th, td { padding: 5px 3px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- En-tête -->
+        <div class="header">
+            <div class="logo"></div>
+            <h1>Diab<span>Predict</span></h1>
+            <p class="subtitle">Rapport Global - Toutes les prédictions</p>
+        </div>
+        
+        <div class="rapport-id">Rapport généré le : {{ date }}</div>
+        <div class="total-info">Total : <strong>{{ total }}</strong> prédictions</div>
+        
+        <!-- Statistiques globales -->
+        <div class="stats-grid">
+            <div class="stat-card total">
+                <div class="number">{{ stats.total_predictions }}</div>
+                <div class="label">Total prédictions</div>
+            </div>
+            <div class="stat-card diabetic">
+                <div class="number">{{ stats.diabetics }}</div>
+                <div class="label">Diabétiques</div>
+            </div>
+            <div class="stat-card non-diabetic">
+                <div class="number">{{ stats.non_diabetics }}</div>
+                <div class="label">Non-diabétiques</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">{{ "%.1f"|format(stats.diabetes_rate) }}%</div>
+                <div class="label">Taux de diabète</div>
+            </div>
+        </div>
+        
+        <!-- Tableau des prédictions -->
+        <h2 style="margin-top: 30px; color: #2d3748;">📋 Liste des prédictions</h2>
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Postnom</th>
+                        <th>Âge</th>
+                        <th>IMC</th>
+                        <th>Glucose</th>
+                        <th>Résultat</th>
+                        <th>Probabilité</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pred in predictions %}
+                    <tr>
+                        <td>{{ pred.prediction_id }}</td>
+                        <td><strong>{{ pred.nom }}</strong></td>
+                        <td>{{ pred.postnom }}</td>
+                        <td>{{ pred.age }}</td>
+                        <td>{{ pred.bmi }}</td>
+                        <td>{{ pred.glucose }}</td>
+                        <td class="status-{{ pred.prediction }}">
+                            {% if pred.prediction == 0 %} Non-diabétique{% else %} Diabétique{% endif %}
+                        </td>
+                        <td>{{ "%.2f"|format(pred.probability*100) }}%</td>
+                        <td>{{ pred.prediction_date[:19] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pied de page -->
+        <div class="footer">
+            <p>Projet réalisé par : <strong>MUSHOBOZI MUNGOBIJIRA Affable</strong> & <strong>Amani Sukuwabo Bravo</strong></p>
+            <p>Modèle : XGBoost - Précision 87.01%</p>
+        </div>
+        
+        <!-- Boutons -->
+        <div class="btn-group no-print">
+            <button onclick="window.print()" class="btn-print"> Imprimer le rapport global</button>
+            <a href="/" class="btn-back">← Retour à l'accueil</a>
+        </div>
+    </div>
+</body>
+</html>

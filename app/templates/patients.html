@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des patients</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #2d3748; text-align: center; }
+        .nav-links { text-align: center; margin: 20px 0; }
+        .nav-links a { color: #667eea; text-decoration: none; margin: 0 15px; font-weight: 500; padding: 8px 20px; border-radius: 8px; }
+        .nav-links a:hover { background: #f0f4ff; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+        th, td {
+            padding: 10px 8px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+        tr:hover { background: #f7fafc; }
+        .btn-back {
+            display: inline-block;
+            padding: 10px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        .btn-back:hover { opacity: 0.9; color: white; }
+        .scroll-container { max-height: 500px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1> Liste des patients</h1>
+        
+        <div class="nav-links">
+            <a href="/"> Accueil</a>
+            <a href="/history"> Historique</a>
+            <a href="/stats"> Statistiques</a>
+        </div>
+        
+        <div class="scroll-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Gross.</th>
+                        <th>Glucose</th>
+                        <th>Pression</th>
+                        <th>Peau</th>
+                        <th>Insuline</th>
+                        <th>IMC</th>
+                        <th>DPF</th>
+                        <th>Âge</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for patient in patients %}
+                    <tr>
+                        <td>{{ patient.id }}</td>
+                        <td>{{ patient.pregnancies }}</td>
+                        <td>{{ patient.glucose }}</td>
+                        <td>{{ patient.blood_pressure }}</td>
+                        <td>{{ patient.skin_thickness }}</td>
+                        <td>{{ patient.insulin }}</td>
+                        <td>{{ patient.bmi }}</td>
+                        <td>{{ patient.dpf }}</td>
+                        <td>{{ patient.age }}</td>
+                        <td>{{ patient.created_at[:19] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="/" class="btn-back">← Retour à l'accueil</a>
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px; color: #a0aec0; font-size: 0.8em;">
+            <p>Projet réalisé par : MUSHOBOZI MUNGOBIJIRA Affable & Amani Sukuwabo Bravo</p>
+        </div>
+    </div>
+</body>
+</html>
