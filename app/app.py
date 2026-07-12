@@ -1,6 +1,4 @@
-# ============================================================
-# APPLICATION FLASK_Diabet_Predict
-# ============================================================
+#  APPLICATION FLASK_Diabet_Predict
 
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 import numpy as np
@@ -17,13 +15,12 @@ SCALER_PATH = os.path.join(BASE_DIR, 'models', 'scaler.pkl')
 
 app = Flask(__name__, template_folder=TEMPLATE_DIR)
 
-print("="*60)
-print("🚀 APPLICATION DE PRÉDICTION DU DIABÈTE")
-print("="*60)
+print(" APPLICATION DE PRÉDICTION DU DIABÈTE")
+print("--"*30)
 
 model = joblib.load(MODEL_PATH)
 scaler = joblib.load(SCALER_PATH)
-print(f"✅ Modèle chargé")
+print(f" Modèle chargé")
 
 def get_connection():
     if not os.path.exists(DB_PATH):
@@ -159,9 +156,8 @@ def update_patient(prediction_id, data):
     conn.close()
     return False
 
-# ============================================================
-# ROUTES
-# ============================================================
+# LES ROUTES
+
 
 @app.route('/')
 def home():
@@ -199,14 +195,14 @@ def predict():
         patient_id = save_patient(data)
         save_prediction(patient_id, prediction, probability)
         if prediction == 0:
-            result = "Non-diabétique ✅"
+            result = "Non-diabétique "
             color = "green"
             advice = "Vous êtes en bonne santé ! Continuez à maintenir un mode de vie sain."
             result_class = "success"
         else:
-            result = "Diabétique ⚠️"
+            result = "Diabétique "
             color = "red"
-            advice = "⚠️ Consultez un médecin pour un diagnostic plus approfondi."
+            advice = " Consultez un médecin pour un diagnostic plus approfondi."
             result_class = "danger"
         stats = get_statistics()
         return render_template('form.html', 
@@ -255,12 +251,12 @@ def rapport(patient_id):
         return "Patient non trouvé", 404
     data = dict(patient)
     if data['prediction'] == 0:
-        result = "Non-diabétique ✅"
+        result = "Non-diabétique "
         color = "green"
         advice = "Le patient est en bonne santé ! Continuez à maintenir un mode de vie sain."
         result_class = "success"
     else:
-        result = "Diabétique ⚠️"
+        result = "Diabétique "
         color = "red"
         advice = "Le patient présente un risque de diabète. Consultez un médecin."
         result_class = "danger"
@@ -291,9 +287,8 @@ def patients():
     patients_list = get_all_patients()
     return render_template('patients.html', patients=patients_list)
 
-# ============================================================
-# ROUTE RAPPORT GLOBAL
-# ============================================================
+#  ROUTE RAPPORT GLOBAL
+
 
 @app.route('/rapport_global')
 def rapport_global():
@@ -314,9 +309,8 @@ def rapport_global():
                          total=len(predictions),
                          date=date)
 
-# ============================================================
 # ROUTES POUR LES ACTIONS
-# ============================================================
+
 
 @app.route('/delete/<int:prediction_id>')
 def delete_prediction_route(prediction_id):
@@ -365,9 +359,8 @@ def edit_prediction(prediction_id):
     except Exception as e:
         return f"Erreur : {str(e)}", 500
 
-# ============================================================
 # API ENDPOINTS
-# ============================================================
+
 
 @app.route('/api/predict', methods=['POST'])
 def api_predict():
@@ -397,19 +390,19 @@ def api_stats():
     stats = get_statistics()
     return jsonify(stats)
 
-# ============================================================
-# LANCEMENT DE L'APPLICATION
-# ============================================================
+#  LANCEMENT DE L'APPLICATION
+
 
 if __name__ == '__main__':
-    print("\n" + "="*60)
-    print("🚀 APPLICATION LANCÉE !")
-    print("="*60)
-    print("📌 Accéder à l'application : http://127.0.0.1:5000")
-    print("📌 Formulaire : http://127.0.0.1:5000/form")
-    print("📌 Historique : http://127.0.0.1:5000/history")
-    print("📌 Statistiques : http://127.0.0.1:5000/stats")
-    print("📌 Patients : http://127.0.0.1:5000/patients")
-    print("📌 Rapport Global : http://127.0.0.1:5000/rapport_global")
-    print("="*60)
+
+    print(" APPLICATION LANCÉE !")
+    print("--"*20)
+    
+    print(" Accéder à l'application : http://127.0.0.1:5000")
+    print(" Formulaire : http://127.0.0.1:5000/form")
+    print(" Historique : http://127.0.0.1:5000/history")
+    print(" Statistiques : http://127.0.0.1:5000/stats")
+    print(" Patients : http://127.0.0.1:5000/patients")
+    print(" Rapport Global : http://127.0.0.1:5000/rapport_global")
+
     app.run(debug=True, host='0.0.0.0', port=5000)
