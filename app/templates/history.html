@@ -97,20 +97,38 @@
             font-size: 0.85em;
         }
         th, td {
-            padding: 10px 6px;
+            padding: 12px 8px;
             text-align: center;
             border-bottom: 1px solid #e2e8f0;
         }
         th {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #667eea;
             color: white;
             font-weight: 600;
             position: sticky;
             top: 0;
+            z-index: 10;
         }
         tr:hover { background: #f7fafc; }
-        .status-0 { color: #48bb78; font-weight: bold; }
-        .status-1 { color: #fc8181; font-weight: bold; }
+        
+        /* Badges de statut pour le diagnostic */
+        .badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 0.9em;
+            display: inline-block;
+        }
+        .badge.positive {
+            background-color: #fff5f5;
+            color: #e53e3e;
+            border: 1px solid #fed7d7;
+        }
+        .badge.negative {
+            background-color: #f0fff4;
+            color: #38a169;
+            border: 1px solid #c6f6d5;
+        }
         
         .btn-actions {
             display: flex;
@@ -118,7 +136,7 @@
             justify-content: center;
         }
         .btn-actions a {
-            padding: 5px 10px;
+            padding: 6px 10px;
             border-radius: 6px;
             text-decoration: none;
             font-size: 0.85em;
@@ -128,26 +146,15 @@
             color: white;
         }
         .btn-actions a:hover {
-            transform: scale(1.1);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        .btn-report {
-            background: #48bb78;
-        }
-        .btn-report:hover {
-            background: #38a169;
-        }
-        .btn-edit {
-            background: #4299e1;
-        }
-        .btn-edit:hover {
-            background: #3182ce;
-        }
-        .btn-delete {
-            background: #fc8181;
-        }
-        .btn-delete:hover {
-            background: #e53e3e;
-        }
+        .btn-report { background: #48bb78; }
+        .btn-report:hover { background: #38a169; }
+        .btn-edit { background: #4299e1; }
+        .btn-edit:hover { background: #3182ce; }
+        .btn-delete { background: #fc8181; }
+        .btn-delete:hover { background: #e53e3e; }
         
         .btn-back {
             display: inline-block;
@@ -158,6 +165,7 @@
             border-radius: 10px;
             margin-top: 10px;
             transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: 600;
         }
         .btn-back:hover {
             transform: translateY(-2px);
@@ -165,7 +173,12 @@
             color: white;
         }
         
-        .scroll-container { max-height: 500px; overflow-y: auto; }
+        .scroll-container { 
+            max-height: 550px; 
+            overflow-y: auto; 
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+        }
         
         .stats-mini {
             display: flex;
@@ -176,24 +189,26 @@
             background: #f7fafc;
             border-radius: 10px;
             flex-wrap: wrap;
+            border: 1px solid #e2e8f0;
         }
-        .stats-mini span { font-weight: 600; }
-        .stats-mini .diab { color: #fc8181; }
-        .stats-mini .non { color: #48bb78; }
+        .stats-mini span { font-weight: 600; color: #4a5568; }
+        .stats-mini .diab { color: #e53e3e; }
+        .stats-mini .non { color: #38a169; }
         
         .pagination {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             margin-top: 20px;
             padding: 15px;
             background: #f7fafc;
             border-radius: 10px;
             flex-wrap: wrap;
+            border: 1px solid #e2e8f0;
         }
         .pagination a {
-            padding: 8px 16px;
+            padding: 8px 14px;
             background: white;
             color: #667eea;
             text-decoration: none;
@@ -202,7 +217,7 @@
             border: 1px solid #e2e8f0;
             transition: all 0.2s;
         }
-        .pagination a:hover {
+        .pagination a:hover:not(.disabled) {
             background: #667eea;
             color: white;
             border-color: #667eea;
@@ -211,14 +226,18 @@
             background: #667eea;
             color: white;
             border-color: #667eea;
+            cursor: default;
         }
         .pagination .disabled {
             opacity: 0.5;
+            color: #a0aec0;
+            background: #edf2f7;
             cursor: not-allowed;
         }
         .pagination .info {
             color: #718096;
             font-size: 0.9em;
+            margin-left: 10px;
         }
         
         .footer {
@@ -232,29 +251,25 @@
         
         @media print {
             body { background: white; padding: 0; }
-            .container { box-shadow: none; }
-            .nav-links { display: none; }
-            .stats-mini { display: none; }
-            .btn-back { display: none; }
-            .btn-print { display: none; }
-            .top-bar { display: none; }
-            .pagination { display: none; }
-            button { display: none; }
-            .footer { display: none; }
-            .btn-actions { display: none; }
-            th { background: #667eea !important; color: white !important; }
-            .scroll-container { max-height: none; overflow-y: visible; }
+            .container { box-shadow: none; max-width: 100%; padding: 0; }
+            .nav-links, .stats-mini, .btn-back, .btn-print, .top-bar, .pagination, .btn-actions, .footer { display: none !important; }
+            th { background: #667eea !important; color: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .scroll-container { max-height: none; overflow-y: visible; border: none; }
+            table { font-size: 0.75em; width: 100%; }
+            th, td { padding: 8px 4px; border-bottom: 1px solid #cbd5e0; }
+        }
+        
+        @media (max-width: 1024px) {
+            .scroll-container { overflow-x: auto; }
+            table { min-width: 1200px; }
         }
         
         @media (max-width: 768px) {
             .container { padding: 15px; }
-            table { font-size: 0.65em; }
-            th, td { padding: 4px 2px; }
             .stats-mini { gap: 10px; font-size: 0.8em; }
             .nav-links a { font-size: 0.8em; padding: 6px 10px; }
-            .btn-actions a { font-size: 0.7em; padding: 3px 6px; }
             .top-bar { flex-direction: column; align-items: stretch; }
-            .pagination a { padding: 5px 10px; font-size: 0.8em; }
+            .pagination a { padding: 6px 10px; font-size: 0.8em; }
         }
     </style>
 </head>
@@ -262,15 +277,15 @@
     <div class="container">
         <!-- Navigation -->
         <div class="nav-links">
-            <a href="/"> Accueil</a>
-            <a href="/form"> Formulaire</a>
-            <a href="/history" class="active"> Historique</a>
-            <a href="/stats"> Statistiques</a>
+            <a href="/">Accueil</a>
+            <a href="/form">Formulaire</a>
+            <a href="/history" class="active">Historique</a>
+            <a href="/stats">Statistiques</a>
         </div>
         
         <!-- Header -->
         <div class="header">
-            <h1> <span>Historique des prédictions</span></h1>
+            <h1><span>Historique des prédictions</span></h1>
             <p class="subtitle">Consultez toutes les prédictions effectuées</p>
         </div>
         
@@ -280,7 +295,7 @@
                 Total : <strong>{{ total }}</strong> prédictions
             </div>
             <div class="btn-print">
-                <button onclick="window.print()"> Imprimer</button>
+                <button onclick="window.print()">Imprimer la liste</button>
             </div>
         </div>
         
@@ -290,7 +305,7 @@
             <span>Total : <strong>{{ stats.total_predictions }}</strong></span>
             <span class="diab">Diabétiques : <strong>{{ stats.diabetics }}</strong></span>
             <span class="non">Non-diabétiques : <strong>{{ stats.non_diabetics }}</strong></span>
-            <span>Taux : <strong>{{ "%.1f"|format(stats.diabetes_rate) }}%</strong></span>
+            <span>Taux de positivité : <strong>{{ "%.1f"|format(stats.diabetes_rate) }}%</strong></span>
         </div>
         {% endif %}
         
@@ -323,22 +338,26 @@
                         <td><strong>{{ pred.nom }}</strong></td>
                         <td>{{ pred.postnom }}</td>
                         <td>{{ pred.pregnancies }}</td>
-                        <td>{{ pred.glucose }}</td>
-                        <td>{{ pred.blood_pressure }}</td>
-                        <td>{{ pred.skin_thickness }}</td>
-                        <td>{{ pred.insulin }}</td>
+                        <td>{{ pred.glucose }} mg/dL</td>
+                        <td>{{ pred.blood_pressure }} mm Hg</td>
+                        <td>{{ pred.skin_thickness }} mm</td>
+                        <td>{{ pred.insulin }} mu U/ml</td>
                         <td>{{ pred.bmi }}</td>
                         <td>{{ pred.dpf }}</td>
-                        <td>{{ pred.age }}</td>
-                        <td class="status-{{ pred.prediction }}">
-                            {% if pred.prediction == 0 %} Non-diabétique{% else %} Diabétique{% endif %}
+                        <td>{{ pred.age }} ans</td>
+                        <td>
+                            {% if pred.prediction == 1 or pred.prediction == "Diabétique" or pred.prediction == "Positif" %}
+                                <span class="badge positive">Diabétique</span>
+                            {% else %}
+                                <span class="badge negative">Non-diabétique</span>
+                            {% endif %}
                         </td>
-                        <td>{{ "%.2f"|format(pred.probability*100) }}%</td>
+                        <td><strong>{{ "%.2f"|format(pred.probability * 100) }}%</strong></td>
                         <td>{{ pred.prediction_date[:19] }}</td>
                         <td>
                             <div class="btn-actions">
                                 <a href="/rapport/{{ pred.patient_id }}" class="btn-report" title="Voir rapport">Rapport</a>
-                                <a href="/edit/{{ pred.prediction_id }}" class="btn-edit" title="Modifier">modifier</a>
+                                <a href="/edit/{{ pred.prediction_id }}" class="btn-edit" title="Modifier">Modifier</a>
                                 <a href="/delete/{{ pred.prediction_id }}" class="btn-delete" title="Supprimer" 
                                    onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette prédiction ?')">Supprimer</a>
                             </div>
@@ -381,14 +400,14 @@
         {% endif %}
         
         <!-- Retour -->
-        <div style="text-align: center; margin-top: 20px;">
+        <div style="text-align: center; margin-top: 30px;">
             <a href="/" class="btn-back">← Retour à l'accueil</a>
         </div>
         
         <!-- Footer -->
         <div class="footer">
-            <p>Projet réalisé par : MUSHOBOZI MUNGOBIJIRA Affable & Amani Sukuwabo Bravo</p>
-            <p>Modèle : XGBoost - Accuracy 87.01%</p>
+            <p>Projet réalisé par : MUSHOBOZI MUNGOBIJIRA Affable & AMANI SUKUWABO Bravo</p>
+            <p>Modèle : XGBoost Classifier - Precision métrique activée</p>
         </div>
     </div>
 </body>

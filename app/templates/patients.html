@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liste des patients</title>
+    <title>DiabPredict - Liste des patients</title>
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -19,18 +20,49 @@
             padding: 30px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
-        h1 { color: #2d3748; text-align: center; }
-        .nav-links { text-align: center; margin: 20px 0; }
-        .nav-links a { color: #667eea; text-decoration: none; margin: 0 15px; font-weight: 500; padding: 8px 20px; border-radius: 8px; }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header h1 span {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+            flex-wrap: wrap;
+        }
+        .nav-links a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.05em;
+            padding: 10px 20px;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
         .nav-links a:hover { background: #f0f4ff; }
+        .nav-links a.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 10px;
             font-size: 0.9em;
         }
         th, td {
-            padding: 10px 8px;
+            padding: 12px 10px;
             text-align: center;
             border-bottom: 1px solid #e2e8f0;
         }
@@ -40,36 +72,93 @@
             font-weight: 600;
             position: sticky;
             top: 0;
+            z-index: 10;
         }
         tr:hover { background: #f7fafc; }
+        
+        /* Badges de statut pour le résultat */
+        .badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85em;
+            display: inline-block;
+        }
+        .badge.positive {
+            background-color: #fff5f5;
+            color: #e53e3e;
+            border: 1px solid #fed7d7;
+        }
+        .badge.negative {
+            background-color: #f0fff4;
+            color: #38a169;
+            border: 1px solid #c6f6d5;
+        }
+
         .btn-back {
             display: inline-block;
-            padding: 10px 25px;
+            padding: 12px 30px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             text-decoration: none;
             border-radius: 10px;
-            margin-top: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: none;
         }
-        .btn-back:hover { opacity: 0.9; color: white; }
-        .scroll-container { max-height: 500px; overflow-y: auto; }
+        .btn-back:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+        
+        .scroll-container { 
+            max-height: 600px; 
+            overflow-y: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            color: #a0aec0;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 1024px) {
+            .scroll-container { overflow-x: auto; }
+            table { min-width: 1000px; }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1> Liste des patients</h1>
-        
-        <div class="nav-links">
-            <a href="/"> Accueil</a>
-            <a href="/history"> Historique</a>
-            <a href="/stats"> Statistiques</a>
+        <!-- Header -->
+        <div class="header">
+            <h1><span>Liste des patients enregistrés</span></h1>
         </div>
         
+        <!-- Navigation -->
+        <div class="nav-links">
+            <a href="/">Accueil</a>
+            <a href="/form">Formulaire</a>
+            <a href="/history" class="active">Historique</a>
+            <a href="/stats">Statistiques</a>
+        </div>
+        
+        <!-- Tableau avec défilement -->
         <div class="scroll-container">
             <table>
                 <thead>
                     <tr>
                         <th>ID</th>
+                        <th>Nom</th>
+                        <th>Postnom</th>
                         <th>Gross.</th>
                         <th>Glucose</th>
                         <th>Pression</th>
@@ -78,34 +167,47 @@
                         <th>IMC</th>
                         <th>DPF</th>
                         <th>Âge</th>
-                        <th>Date</th>
+                        <th>Date de consultation</th>
+                        <th>Résultat (XGBoost)</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for patient in patients %}
                     <tr>
-                        <td>{{ patient.id }}</td>
+                        <td><strong>{{ patient.id }}</strong></td>
+                        <td>{{ patient.nom }}</td>
+                        <td>{{ patient.postnom }}</td>
                         <td>{{ patient.pregnancies }}</td>
-                        <td>{{ patient.glucose }}</td>
-                        <td>{{ patient.blood_pressure }}</td>
-                        <td>{{ patient.skin_thickness }}</td>
-                        <td>{{ patient.insulin }}</td>
+                        <td>{{ patient.glucose }} mg/dL</td>
+                        <td>{{ patient.blood_pressure }} mm Hg</td>
+                        <td>{{ patient.skin_thickness }} mm</td>
+                        <td>{{ patient.insulin }} mu U/ml</td>
                         <td>{{ patient.bmi }}</td>
                         <td>{{ patient.dpf }}</td>
-                        <td>{{ patient.age }}</td>
+                        <td>{{ patient.age }} ans</td>
                         <td>{{ patient.created_at[:19] }}</td>
+                        <td>
+                            {% if patient.prediction == "Diabétique" or patient.resultat == 1 or patient.prediction == "Positif" %}
+                                <span class="badge positive">Positif</span>
+                            {% else %}
+                                <span class="badge negative">Négatif</span>
+                            {% endif %}
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
         
-        <div style="text-align: center; margin-top: 20px;">
+        <!-- Bouton retour -->
+        <div style="text-align: center; margin-top: 30px;">
             <a href="/" class="btn-back">← Retour à l'accueil</a>
         </div>
         
-        <div style="text-align: center; margin-top: 20px; color: #a0aec0; font-size: 0.8em;">
-            <p>Projet réalisé par : MUSHOBOZI MUNGOBIJIRA Affable & Amani Sukuwabo Bravo</p>
+        <!-- Footer -->
+        <div class="footer">
+            <p>Projet réalisé par : MUSHOBOZI MUNGOBIJIRA Affable & AMANI SUKUWABO Bravo</p>
+            <p>Système de gestion de base de données médicale sécurisée</p>
         </div>
     </div>
 </body>

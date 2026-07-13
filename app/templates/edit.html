@@ -50,6 +50,11 @@
         }
         
         h1 { text-align: center; color: #2d3748; margin-bottom: 25px; }
+        h1 span {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
         
         .form-grid {
             display: grid;
@@ -59,19 +64,19 @@
         .form-group { display: flex; flex-direction: column; }
         .form-group label { font-weight: 600; color: #2d3748; margin-bottom: 5px; font-size: 0.9em; }
         .form-group input {
-            padding: 10px;
+            padding: 12px;
             border: 2px solid #e2e8f0;
             border-radius: 10px;
             font-size: 1em;
-            transition: border-color 0.3s;
+            transition: all 0.3s;
         }
-        .form-group input:focus { outline: none; border-color: #667eea; }
+        .form-group input:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
         
         .btn-group {
             grid-column: 1 / -1;
             display: flex;
             gap: 15px;
-            margin-top: 15px;
+            margin-top: 20px;
         }
         .btn-save {
             flex: 1;
@@ -83,9 +88,9 @@
             font-size: 1.1em;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
-        .btn-save:hover { transform: translateY(-2px); }
+        .btn-save:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(56, 161, 105, 0.3); }
         .btn-cancel {
             flex: 1;
             padding: 15px;
@@ -98,7 +103,7 @@
             cursor: pointer;
             text-align: center;
             text-decoration: none;
-            transition: transform 0.2s;
+            transition: transform 0.2s, background-color 0.2s;
         }
         .btn-cancel:hover { transform: translateY(-2px); background: #cbd5e0; }
         
@@ -123,66 +128,72 @@
     <div class="container">
         <!-- Navigation -->
         <div class="nav-links">
-            <a href="/"> Accueil</a>
-            <a href="/form"> Formulaire</a>
-            <a href="/history" class="active"> Historique</a>
-            <a href="/stats"> Statistiques</a>
+            <a href="/">Accueil</a>
+            <a href="/form">Formulaire</a>
+            <a href="/history" class="active">Historique</a>
+            <a href="/stats">Statistiques</a>
         </div>
         
-        <h1> Modifier le patient</h1>
+        <h1><span>Modifier la fiche patient</span></h1>
         
         <form method="POST">
             <div class="form-grid">
+                <!-- Identité -->
                 <div class="form-group">
                     <label for="nom">Nom</label>
-                    <input type="text" id="nom" name="nom" value="{{ patient.nom }}" required>
+                    <input type="text" id="nom" name="nom" value="{{ patient.nom }}" required placeholder="Ex: Mushobozi">
                 </div>
                 <div class="form-group">
                     <label for="postnom">Postnom</label>
-                    <input type="text" id="postnom" name="postnom" value="{{ patient.postnom }}" required>
+                    <input type="text" id="postnom" name="postnom" value="{{ patient.postnom }}" required placeholder="Ex: Mungobijira">
+                </div>
+                
+                <!-- Données Physiologiques & Cliniques -->
+                <div class="form-group">
+                    <label for="pregnancies">Nombre de grossesses</label>
+                    <input type="number" step="1" min="0" max="20" id="pregnancies" name="pregnancies" value="{{ patient.pregnancies }}" required>
                 </div>
                 <div class="form-group">
-                    <label for="pregnancies">Grossesses</label>
-                    <input type="number" step="1" id="pregnancies" name="pregnancies" value="{{ patient.pregnancies }}" required>
+                    <label for="glucose">Taux de glucose (mg/dL)</label>
+                    <input type="number" step="1" min="40" max="300" id="glucose" name="glucose" value="{{ patient.glucose }}" required>
                 </div>
                 <div class="form-group">
-                    <label for="glucose">Glucose</label>
-                    <input type="number" step="0.01" id="glucose" name="glucose" value="{{ patient.glucose }}" required>
+                    <label for="blood_pressure">Pression artérielle diastolique (mm Hg)</label>
+                    <input type="number" step="1" min="30" max="140" id="blood_pressure" name="blood_pressure" value="{{ patient.blood_pressure }}" required>
                 </div>
                 <div class="form-group">
-                    <label for="blood_pressure">Pression</label>
-                    <input type="number" step="0.01" id="blood_pressure" name="blood_pressure" value="{{ patient.blood_pressure }}" required>
+                    <label for="skin_thickness">Épaisseur du pli cutané (mm)</label>
+                    <input type="number" step="1" min="5" max="100" id="skin_thickness" name="skin_thickness" value="{{ patient.skin_thickness }}" required>
                 </div>
                 <div class="form-group">
-                    <label for="skin_thickness">Peau</label>
-                    <input type="number" step="0.01" id="skin_thickness" name="skin_thickness" value="{{ patient.skin_thickness }}" required>
+                    <label for="insulin">Taux d'insuline (mu U/ml)</label>
+                    <input type="number" step="1" min="10" max="900" id="insulin" name="insulin" value="{{ patient.insulin }}" required>
                 </div>
                 <div class="form-group">
-                    <label for="insulin">Insuline</label>
-                    <input type="number" step="0.01" id="insulin" name="insulin" value="{{ patient.insulin }}" required>
+                    <label for="bmi">Indice de Masse Corporelle (IMC)</label>
+                    <input type="number" step="0.1" min="10" max="70" id="bmi" name="bmi" value="{{ patient.bmi }}" required>
                 </div>
                 <div class="form-group">
-                    <label for="bmi">IMC</label>
-                    <input type="number" step="0.01" id="bmi" name="bmi" value="{{ patient.bmi }}" required>
+                    <label for="dpf">Score DPF (Antécédents familiaux)</label>
+                    <input type="number" step="0.001" min="0.05" max="2.5" id="dpf" name="dpf" value="{{ patient.dpf }}" required>
                 </div>
                 <div class="form-group">
-                    <label for="dpf">DPF</label>
-                    <input type="number" step="0.001" id="dpf" name="dpf" value="{{ patient.dpf }}" required>
+                    <label for="age">Âge (ans)</label>
+                    <input type="number" step="1" min="15" max="120" id="age" name="age" value="{{ patient.age }}" required>
                 </div>
-                <div class="form-group">
-                    <label for="age">Âge</label>
-                    <input type="number" step="1" id="age" name="age" value="{{ patient.age }}" required>
-                </div>
+                
+                <!-- Actions -->
                 <div class="btn-group">
-                    <button type="submit" class="btn-save"> Sauvegarder</button>
-                    <a href="/history" class="btn-cancel"> Annuler</a>
+                    <button type="submit" class="btn-save">Enregistrer les modifications</button>
+                    <a href="/history" class="btn-cancel">Annuler</a>
                 </div>
             </div>
         </form>
         
+        <!-- Pied de page -->
         <div class="footer">
-            <p>Projet réalisé par : MUSHOBOZI MUNGOBIJIRA Affable & Amani Sukuwabo Bravo</p>
-            <p>Modèle : XGBoost - Accuracy 87.01%</p>
+            <p>Projet réalisé par : MUSHOBOZI MUNGOBIJIRA Affable & AMANI SUKUWABO Bravo</p>
+            <p>Modèle d'analyse : XGBoost Classifier - Validation de cohérence des données active</p>
         </div>
     </div>
 </body>

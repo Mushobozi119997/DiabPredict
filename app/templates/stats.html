@@ -11,21 +11,26 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
         }
         .container {
             max-width: 800px;
+            width: 100%;
             margin: 0 auto;
             background: white;
             border-radius: 20px;
-            padding: 30px;
+            padding: 35px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-top: 20px;
         }
         
         .nav-links {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            margin-bottom: 25px;
+            gap: 10px;
+            margin-bottom: 30px;
             padding-bottom: 15px;
             border-bottom: 2px solid #e2e8f0;
             flex-wrap: wrap;
@@ -34,8 +39,8 @@
             color: #667eea;
             text-decoration: none;
             font-weight: 600;
-            font-size: 1.05em;
-            padding: 10px 20px;
+            font-size: 0.95em;
+            padding: 10px 18px;
             border-radius: 10px;
             transition: all 0.3s;
         }
@@ -47,10 +52,15 @@
         
         .header {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
+        }
+        .header .logo { 
+            margin-bottom: 10px; 
+            display: flex;
+            justify-content: center;
         }
         .header h1 {
-            font-size: 2em;
+            font-size: 2.2em;
             color: #2d3748;
         }
         .header h1 span {
@@ -58,33 +68,62 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .header .subtitle { color: #718096; font-size: 1em; }
+        .header .subtitle { color: #718096; font-size: 1.1em; margin-top: 5px; }
+        
+        .action-bar {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+        }
+        .btn-print {
+            padding: 10px 22px;
+            background: #2d3748;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-print:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+        }
         
         .stat-card {
             background: #f7fafc;
             border-radius: 15px;
-            padding: 20px;
+            padding: 22px 25px;
             margin: 15px 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: transform 0.2s;
+            border: 1px solid #e2e8f0;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
-        .stat-card:hover { transform: translateX(5px); }
-        .stat-card .label { font-weight: 600; color: #2d3748; }
-        .stat-card .value { font-size: 1.8em; font-weight: 700; }
-        .stat-card .value.green { color: #48bb78; }
-        .stat-card .value.red { color: #fc8181; }
+        .stat-card:hover { 
+            transform: translateX(5px); 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+        }
+        .stat-card .label { font-weight: 600; color: #4a5568; font-size: 1.05em; }
+        .stat-card .value { font-size: 2em; font-weight: 700; }
+        .stat-card .value.green { color: #38a169; }
+        .stat-card .value.red { color: #e53e3e; }
         .stat-card .value.blue { color: #667eea; }
         
+        .btn-container {
+            text-align: center;
+            margin-top: 30px;
+        }
         .btn-back {
             display: inline-block;
-            padding: 10px 25px;
+            padding: 12px 35px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             text-decoration: none;
             border-radius: 10px;
-            margin-top: 10px;
+            font-weight: 600;
             transition: transform 0.2s, box-shadow 0.2s;
         }
         .btn-back:hover {
@@ -95,149 +134,113 @@
         
         .footer {
             text-align: center;
-            margin-top: 30px;
+            margin-top: 35px;
             padding-top: 20px;
             border-top: 1px solid #e2e8f0;
             color: #a0aec0;
-            font-size: 0.9em;
+            font-size: 0.85em;
+            line-height: 1.5;
         }
+        .footer strong { color: #667eea; }
         
         @media (max-width: 600px) {
             .container { padding: 20px; }
-            .header h1 { font-size: 1.5em; }
-            .stat-card { flex-direction: column; text-align: center; }
-            .stat-card .value { font-size: 1.5em; }
+            .header h1 { font-size: 1.7em; }
+            .stat-card { flex-direction: column; text-align: center; gap: 10px; }
+            .stat-card .value { font-size: 1.7em; }
             .nav-links a { font-size: 0.85em; padding: 8px 12px; }
+            .action-bar { justify-content: center; }
+            .btn-print, .btn-back { width: 100%; text-align: center; }
         }
     
         @media print {
-            body { background: white; padding: 0; }
-            .container { box-shadow: none; }
-            .nav-links { display: none; }
-            .btn-back { display: none; }
-            button { display: none; }
-            .footer { display: none; }
+            body { background: white !important; padding: 0 !important; }
+            .container { box-shadow: none !important; padding: 10px !important; max-width: 100%; }
+            .nav-links, .btn-container, .action-bar, .no-print { display: none !important; }
+            .stat-card { border: 1px solid #cbd5e0 !important; background: #f8fafc !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .footer { color: #718096 !important; }
         }
-
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="nav-links">
-            <a href="/"> Accueil</a>
-            <a href="/form"> Formulaire</a>
-            <a href="/history"> Historique</a>
-            <a href="/stats" class="active"> Statistiques</a>
+        <!-- Navigation -->
+        <div class="nav-links no-print">
+            <a href="/">Accueil</a>
+            <a href="/form">Formulaire</a>
+            <a href="/history">Historique</a>
+            <a href="/stats" class="active">Statistiques</a>
         </div>
         
+        <!-- En-tête -->
         <div class="header">
-            <h1> <span>Statistiques</span></h1>
-            <p class="subtitle">Vue d'ensemble des prédictions effectuées</p>
+            <div class="logo">
+                <svg width="55" height="55" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 10.5V13.5C19 17.366 15.866 20.5 12 20.5C8.13401 20.5 5 17.366 5 13.5V10.5" stroke="url(#paint0_linear)" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M12 3.5V12.5" stroke="url(#paint1_linear)" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M9.5 6.5H14.5" stroke="url(#paint2_linear)" stroke-width="2" stroke-linecap="round"/>
+                    <defs>
+                        <linearGradient id="paint0_linear" x1="5" y1="10.5" x2="19" y2="20.5" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#667eea"/>
+                            <stop offset="1" stop-color="#764ba2"/>
+                        </linearGradient>
+                        <linearGradient id="paint1_linear" x1="12" y1="3.5" x2="12" y2="12.5" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#667eea"/>
+                        </linearGradient>
+                        <linearGradient id="paint2_linear" x1="9.5" y1="6.5" x2="14.5" y2="6.5" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#667eea"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            <h1>Diab<span>Predict</span> - Statistiques</h1>
+            <p class="subtitle">Vue d'ensemble et métriques des diagnostics</p>
         </div>
         
         {% if stats %}
-        
-        <div style="text-align: right; margin: 10px 0;">
-            <button onclick="window.print()" style="
-                padding: 10px 25px;
-                background: #2d3748;
-                color: white;
-                border: none;
-                border-radius: 10px;
-                font-size: 1em;
-                font-weight: 600;
-                cursor: pointer;
-                transition: transform 0.2s, box-shadow 0.2s;
-            " onmouseover="this.style.transform='translateY(-2px)'" 
-               onmouseout="this.style.transform='translateY(0)'">
-                 Imprimer les statistiques
-            </button>
+        <!-- Barre d'action d'impression unique -->
+        <div class="action-bar no-print">
+            <button onclick="window.print()" class="btn-print">Imprimer les statistiques</button>
         </div>
 
+        <!-- Section des cartes métriques -->
         <div class="stat-card">
             <span class="label">Total des prédictions</span>
             <span class="value blue">{{ stats.total_predictions }}</span>
         </div>
         
-        <div style="text-align: right; margin: 10px 0;">
-            <button onclick="window.print()" style="
-                padding: 10px 25px;
-                background: #2d3748;
-                color: white;
-                border: none;
-                border-radius: 10px;
-                font-size: 1em;
-                font-weight: 600;
-                cursor: pointer;
-                transition: transform 0.2s, box-shadow 0.2s;
-            " onmouseover="this.style.transform='translateY(-2px)'" 
-               onmouseout="this.style.transform='translateY(0)'">
-                 Imprimer les statistiques
-            </button>
-        </div>
-
         <div class="stat-card">
-            <span class="label">Patients diabétiques</span>
+            <span class="label">Patients diagnostiqués diabétiques</span>
             <span class="value red">{{ stats.diabetics }}</span>
         </div>
         
-        <div style="text-align: right; margin: 10px 0;">
-            <button onclick="window.print()" style="
-                padding: 10px 25px;
-                background: #2d3748;
-                color: white;
-                border: none;
-                border-radius: 10px;
-                font-size: 1em;
-                font-weight: 600;
-                cursor: pointer;
-                transition: transform 0.2s, box-shadow 0.2s;
-            " onmouseover="this.style.transform='translateY(-2px)'" 
-               onmouseout="this.style.transform='translateY(0)'">
-                 Imprimer les statistiques
-            </button>
-        </div>
-
         <div class="stat-card">
-            <span class="label">Patients non-diabétiques</span>
+            <span class="label">Patients diagnostiqués non-diabétiques</span>
             <span class="value green">{{ stats.non_diabetics }}</span>
         </div>
         
-        <div style="text-align: right; margin: 10px 0;">
-            <button onclick="window.print()" style="
-                padding: 10px 25px;
-                background: #2d3748;
-                color: white;
-                border: none;
-                border-radius: 10px;
-                font-size: 1em;
-                font-weight: 600;
-                cursor: pointer;
-                transition: transform 0.2s, box-shadow 0.2s;
-            " onmouseover="this.style.transform='translateY(-2px)'" 
-               onmouseout="this.style.transform='translateY(0)'">
-                 Imprimer les statistiques
-            </button>
-        </div>
-
         <div class="stat-card">
-            <span class="label">Taux de diabète</span>
+            <span class="label">Taux global de positivité</span>
             <span class="value blue">{{ "%.1f"|format(stats.diabetes_rate) }}%</span>
         </div>
+        
         {% else %}
+        <!-- Message si aucune donnée présente -->
         <div style="text-align: center; padding: 40px; color: #718096;">
-            <p> Aucune statistique disponible</p>
-            <p style="font-size: 0.9em; margin-top: 10px;">Effectuez une première prédiction pour voir les statistiques</p>
+            <p style="font-size: 1.1em; font-weight: 500;">Aucune statistique disponible pour le moment.</p>
+            <p style="font-size: 0.9em; margin-top: 10px;">Effectuez vos premières analyses depuis le formulaire pour alimenter le tableau de bord.</p>
         </div>
         {% endif %}
         
-        <div style="text-align: center; margin-top: 20px;">
+        <!-- Bouton retour -->
+        <div class="btn-container no-print">
             <a href="/" class="btn-back">← Retour à l'accueil</a>
         </div>
         
+        <!-- Pied de page -->
         <div class="footer">
-            <p>Projet réalisé par : MUSHOBOZI MUNGOBIJIRA Affable & Amani Sukuwabo Bravo</p>
-            <p>Modèle : XGBoost - Accuracy 87.01%</p>
+            <p>Projet réalisé par : <strong>MUSHOBOZI MUNGOBIJIRA Affable</strong> & <strong>AMANI SUKUWABO Bravo</strong></p>
+            <p>Architecture analytique : XGBoost Classifier - Précision globale de 87.01%</p>
         </div>
     </div>
 </body>

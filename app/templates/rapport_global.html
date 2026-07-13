@@ -17,6 +17,7 @@
         }
         .container {
             max-width: 1200px;
+            width: 100%;
             margin: 0 auto;
             background: white;
             padding: 35px;
@@ -31,14 +32,18 @@
             padding-bottom: 20px;
             margin-bottom: 25px;
         }
-        .header .logo { font-size: 3em; margin-bottom: 5px; }
-        .header h1 { color: #2d3748; font-size: 2em; }
+        .header .logo { 
+            margin-bottom: 10px; 
+            display: flex;
+            justify-content: center;
+        }
+        .header h1 { color: #2d3748; font-size: 2.2em; }
         .header h1 span {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .header .subtitle { color: #718096; font-size: 1.1em; }
+        .header .subtitle { color: #718096; font-size: 1.1em; margin-top: 5px; }
         
         .rapport-id { text-align: right; color: #a0aec0; font-size: 0.85em; margin-bottom: 15px; }
         
@@ -56,9 +61,9 @@
             border: 1px solid #e2e8f0;
         }
         .stat-card .number { font-size: 2em; font-weight: 700; color: #2d3748; }
-        .stat-card .label { color: #718096; font-size: 0.85em; margin-top: 5px; }
-        .stat-card.diabetic .number { color: #fc8181; }
-        .stat-card.non-diabetic .number { color: #48bb78; }
+        .stat-card .label { color: #718096; font-size: 0.85em; margin-top: 5px; font-weight: 500; }
+        .stat-card.diabetic .number { color: #e53e3e; }
+        .stat-card.non-diabetic .number { color: #38a169; }
         .stat-card.total .number { color: #667eea; }
         
         table {
@@ -68,22 +73,39 @@
             font-size: 0.85em;
         }
         th, td {
-            padding: 10px 6px;
+            padding: 12px 8px;
             text-align: center;
             border-bottom: 1px solid #e2e8f0;
         }
         th {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #667eea;
             color: white;
             font-weight: 600;
         }
         tr:hover { background: #f7fafc; }
-        .status-0 { color: #48bb78; font-weight: bold; }
-        .status-1 { color: #fc8181; font-weight: bold; }
+        
+        /* Badges de statut */
+        .badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 0.9em;
+            display: inline-block;
+        }
+        .badge.positive {
+            background-color: #fff5f5;
+            color: #e53e3e;
+            border: 1px solid #fed7d7;
+        }
+        .badge.negative {
+            background-color: #f0fff4;
+            color: #38a169;
+            border: 1px solid #c6f6d5;
+        }
         
         .btn-group {
             text-align: center;
-            margin-top: 25px;
+            margin-top: 30px;
             display: flex;
             justify-content: center;
             gap: 15px;
@@ -138,19 +160,25 @@
         
         @media print {
             body { background: white !important; padding: 0 !important; }
-            .container { box-shadow: none !important; padding: 20px !important; border-radius: 0 !important; }
-            .btn-group { display: none !important; }
-            .btn-print { display: none !important; }
-            .no-print { display: none !important; }
+            .container { box-shadow: none !important; padding: 20px !important; border-radius: 0 !important; max-width: 100%; }
+            .btn-group, .btn-print, .no-print { display: none !important; }
+            th { background: #667eea !important; color: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .header { border-bottom: 2px solid #667eea !important; }
-            .stat-card { border: 1px solid #ddd !important; }
+            .stat-card { border: 1px solid #cbd5e0 !important; background: #f8fafc !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .badge { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        }
+        
+        @media (max-width: 992px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
         }
         
         @media (max-width: 768px) {
             .container { padding: 20px; }
-            .stats-grid { grid-template-columns: 1fr 1fr; }
-            table { font-size: 0.7em; }
-            th, td { padding: 5px 3px; }
+            table { min-width: 750px; }
+            .scroll-wrapper { overflow-x: auto; border: 1px solid #e2e8f0; border-radius: 8px; }
+            th, td { padding: 8px 4px; font-size: 0.9em; }
+            .btn-group { flex-direction: column; align-items: center; }
+            .btn-print, .btn-back { width: 100%; text-align: center; }
         }
     </style>
 </head>
@@ -158,13 +186,31 @@
     <div class="container">
         <!-- En-tête -->
         <div class="header">
-            <div class="logo"></div>
+            <div class="logo">
+                <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 10.5V13.5C19 17.366 15.866 20.5 12 20.5C8.13401 20.5 5 17.366 5 13.5V10.5" stroke="url(#paint0_linear)" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M12 3.5V12.5" stroke="url(#paint1_linear)" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M9.5 6.5H14.5" stroke="url(#paint2_linear)" stroke-width="2" stroke-linecap="round"/>
+                    <defs>
+                        <linearGradient id="paint0_linear" x1="5" y1="10.5" x2="19" y2="20.5" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#667eea"/>
+                            <stop offset="1" stop-color="#764ba2"/>
+                        </linearGradient>
+                        <linearGradient id="paint1_linear" x1="12" y1="3.5" x2="12" y2="12.5" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#667eea"/>
+                        </linearGradient>
+                        <linearGradient id="paint2_linear" x1="9.5" y1="6.5" x2="14.5" y2="6.5" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#667eea"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
             <h1>Diab<span>Predict</span></h1>
-            <p class="subtitle">Rapport Global - Toutes les prédictions</p>
+            <p class="subtitle">Rapport Global - Synthèse des analyses effectuées</p>
         </div>
         
         <div class="rapport-id">Rapport généré le : {{ date }}</div>
-        <div class="total-info">Total : <strong>{{ total }}</strong> prédictions</div>
+        <div class="total-info">Total : <strong>{{ total }}</strong> prédictions enregistrées</div>
         
         <!-- Statistiques globales -->
         <div class="stats-grid">
@@ -182,13 +228,13 @@
             </div>
             <div class="stat-card">
                 <div class="number">{{ "%.1f"|format(stats.diabetes_rate) }}%</div>
-                <div class="label">Taux de diabète</div>
+                <div class="label">Taux global</div>
             </div>
         </div>
         
         <!-- Tableau des prédictions -->
-        <h2 style="margin-top: 30px; color: #2d3748;">📋 Liste des prédictions</h2>
-        <div style="overflow-x: auto;">
+        <h2 style="margin-top: 30px; color: #2d3748; font-size: 1.3em; margin-bottom: 10px;">📋 Liste complète des analyses</h2>
+        <div class="scroll-wrapper">
             <table>
                 <thead>
                     <tr>
@@ -200,7 +246,7 @@
                         <th>Glucose</th>
                         <th>Résultat</th>
                         <th>Probabilité</th>
-                        <th>Date</th>
+                        <th>Date d'analyse</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -209,14 +255,18 @@
                         <td>{{ pred.prediction_id }}</td>
                         <td><strong>{{ pred.nom }}</strong></td>
                         <td>{{ pred.postnom }}</td>
-                        <td>{{ pred.age }}</td>
+                        <td>{{ pred.age }} ans</td>
                         <td>{{ pred.bmi }}</td>
-                        <td>{{ pred.glucose }}</td>
-                        <td class="status-{{ pred.prediction }}">
-                            {% if pred.prediction == 0 %} Non-diabétique{% else %} Diabétique{% endif %}
+                        <td>{{ pred.glucose }} mg/dL</td>
+                        <td>
+                            {% if pred.prediction == 1 or pred.prediction == "Diabétique" or pred.prediction == "Positif" %}
+                                <span class="badge positive">Diabétique</span>
+                            {% else %}
+                                <span class="badge negative">Non-diabétique</span>
+                            {% endif %}
                         </td>
-                        <td>{{ "%.2f"|format(pred.probability*100) }}%</td>
-                        <td>{{ pred.prediction_date[:19] }}</td>
+                        <td><strong>{{ "%.2f"|format(pred.probability * 100) }}%</strong></td>
+                        <td>{{ pred.prediction_date[:10] if pred.prediction_date else date[:10] }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -225,13 +275,13 @@
         
         <!-- Pied de page -->
         <div class="footer">
-            <p>Projet réalisé par : <strong>MUSHOBOZI MUNGOBIJIRA Affable</strong> & <strong>Amani Sukuwabo Bravo</strong></p>
-            <p>Modèle : XGBoost - Précision 87.01%</p>
+            <p>Projet réalisé par : <strong>MUSHOBOZI MUNGOBIJIRA Affable</strong> & <strong>AMANI SUKUWABO Bravo</strong></p>
+            <p>Moteur d'apprentissage : XGBoost Classifier - Modèle validé à 87.01% d'accuracy</p>
         </div>
         
-        <!-- Boutons -->
+        <!-- Actions d'interface -->
         <div class="btn-group no-print">
-            <button onclick="window.print()" class="btn-print"> Imprimer le rapport global</button>
+            <button onclick="window.print()" class="btn-print">Imprimer le rapport global</button>
             <a href="/" class="btn-back">← Retour à l'accueil</a>
         </div>
     </div>

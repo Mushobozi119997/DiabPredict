@@ -17,6 +17,7 @@
         }
         .container {
             max-width: 800px;
+            width: 100%;
             margin: 0 auto;
             background: white;
             padding: 35px;
@@ -31,14 +32,18 @@
             padding-bottom: 20px;
             margin-bottom: 25px;
         }
-        .header .logo { font-size: 3em; margin-bottom: 5px; }
-        .header h1 { color: #2d3748; font-size: 2em; }
+        .header .logo { 
+            margin-bottom: 10px; 
+            display: flex;
+            justify-content: center;
+        }
+        .header h1 { color: #2d3748; font-size: 2.2em; }
         .header h1 span {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .header .subtitle { color: #718096; font-size: 1.1em; }
+        .header .subtitle { color: #718096; font-size: 1.1em; margin-top: 5px; }
         
         .rapport-id { text-align: right; color: #a0aec0; font-size: 0.85em; margin-bottom: 15px; }
         
@@ -79,16 +84,12 @@
             border-radius: 15px;
             margin: 20px 0;
         }
-        .result-box.success { background: #f0fff4; border: 2px solid #48bb78; }
-        .result-box.danger { background: #fff5f5; border: 2px solid #fc8181; }
+        .result-box.success, .result-box.negative { background: #f0fff4; border: 2px solid #48bb78; }
+        .result-box.danger, .result-box.positive { background: #fff5f5; border: 2px solid #fc8181; }
         .result-box .prediction { font-size: 2em; font-weight: 700; }
         .result-box .probability { font-size: 1.2em; color: #4a5568; margin-top: 8px; }
-        .result-box .advice { margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.7); border-radius: 10px; }
+        .result-box .advice { margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.8); border-radius: 10px; color: #4a5568; line-height: 1.5; }
         
-        .btn-print {
-            text-align: center;
-            margin: 20px 0 10px 0;
-        }
         .btn-print button {
             padding: 12px 35px;
             background: #2d3748;
@@ -121,7 +122,7 @@
         
         .btn-group {
             text-align: center;
-            margin-top: 20px;
+            margin-top: 30px;
             display: flex;
             justify-content: center;
             gap: 15px;
@@ -140,19 +141,18 @@
         
         @media print {
             body { background: white !important; padding: 0 !important; }
-            .container { box-shadow: none !important; padding: 20px !important; border-radius: 0 !important; }
-            .btn-group { display: none !important; }
-            .btn-print { display: none !important; }
-            .no-print { display: none !important; }
-            .patient-card { border: 1px solid #ddd !important; }
+            .container { box-shadow: none !important; padding: 20px !important; border-radius: 0 !important; max-width: 100%; }
+            .btn-group, .btn-print, .no-print { display: none !important; }
+            .patient-card { border: 1px solid #cbd5e0 !important; background: #f8fafc !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .header { border-bottom: 2px solid #667eea !important; }
+            .result-box { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
         }
         
         @media (max-width: 600px) {
             .container { padding: 20px; }
             .patient-info { grid-template-columns: 1fr; }
-            .header h1 { font-size: 1.5em; }
-            .result-box .prediction { font-size: 1.5em; }
+            .header h1 { font-size: 1.6em; }
+            .result-box .prediction { font-size: 1.6em; }
             .btn-group { flex-direction: column; align-items: center; }
             .btn-print button, .btn-back { width: 100%; text-align: center; }
         }
@@ -160,16 +160,36 @@
 </head>
 <body>
     <div class="container">
+        <!-- En-tête -->
         <div class="header">
-            <div class="logo"></div>
+            <div class="logo">
+                <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 10.5V13.5C19 17.366 15.866 20.5 12 20.5C8.13401 20.5 5 17.366 5 13.5V10.5" stroke="url(#paint0_linear)" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M12 3.5V12.5" stroke="url(#paint1_linear)" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M9.5 6.5H14.5" stroke="url(#paint2_linear)" stroke-width="2" stroke-linecap="round"/>
+                    <defs>
+                        <linearGradient id="paint0_linear" x1="5" y1="10.5" x2="19" y2="20.5" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#667eea"/>
+                            <stop offset="1" stop-color="#764ba2"/>
+                        </linearGradient>
+                        <linearGradient id="paint1_linear" x1="12" y1="3.5" x2="12" y2="12.5" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#667eea"/>
+                        </linearGradient>
+                        <linearGradient id="paint2_linear" x1="9.5" y1="6.5" x2="14.5" y2="6.5" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#667eea"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
             <h1>Diab<span>Predict</span></h1>
-            <p class="subtitle">Rapport de prédiction du diabète</p>
+            <p class="subtitle">Rapport officiel de prédiction du diabète</p>
         </div>
         
         <div class="rapport-id">Rapport généré le : {{ date }}</div>
         
+        <!-- Fiche d'informations du Patient -->
         <div class="patient-card">
-            <h2> Informations du patient</h2>
+            <h2>Informations du patient</h2>
             <div class="patient-info">
                 <div class="info-item"><span class="label">Nom</span><span class="value">{{ nom }}</span></div>
                 <div class="info-item"><span class="label">Postnom</span><span class="value">{{ postnom }}</span></div>
@@ -180,24 +200,39 @@
                 <div class="info-item"><span class="label">Grossesses</span><span class="value">{{ pregnancies }}</span></div>
                 <div class="info-item"><span class="label">Insuline</span><span class="value">{{ insulin }} mu U/ml</span></div>
                 <div class="info-item"><span class="label">DPF</span><span class="value">{{ dpf }}</span></div>
-                <div class="info-item"><span class="label">Date</span><span class="value">{{ date }}</span></div>
+                <div class="info-item"><span class="label">Date d'analyse</span><span class="value">{{ date[:10] if date else '' }}</span></div>
             </div>
         </div>
         
-        <div class="result-box {{ result_class }}">
-            <div class="prediction" style="color: {{ color }};">{{ prediction }}</div>
-            <div class="probability">Probabilité : {{ probability }}</div>
-            <div class="advice"> {{ advice }}</div>
+        <!-- Bloc Diagnostic -->
+        {% set is_positive = (result_class == 'danger' or result_class == 'positive' or prediction == 'Diabétique' or prediction == 'Positif') %}
+        <div class="result-box {{ 'danger' if is_positive else 'success' }}">
+            <div class="prediction" style="color: {{ '#e53e3e' if is_positive else '#38a169' }};">
+                {{ prediction }}
+            </div>
+            <div class="probability">
+                Probabilité : 
+                <strong>
+                    {% if '%' in probability|string %}
+                        {{ probability }}
+                    {% else %}
+                        {{ "%.2f"|format(probability * 100) }}%
+                    {% endif %}
+                </strong>
+            </div>
+            <div class="advice">{{ advice }}</div>
         </div>
         
+        <!-- Pied de page -->
         <div class="footer">
-            <p>Projet réalisé par : <strong>MUSHOBOZI MUNGOBIJIRA Affable</strong> & <strong>Amani Sukuwabo Bravo</strong></p>
-            <p>Modèle : XGBoost - Précision 87.01%</p>
+            <p>Projet réalisé par : <strong>MUSHOBOZI MUNGOBIJIRA Affable</strong> & <strong>AMANI SUKUWABO Bravo</strong></p>
+            <p>Algorithme prédictif : XGBoost - Précision du modèle 87.01%</p>
         </div>
         
+        <!-- Actions d'interface -->
         <div class="btn-group no-print">
             <div class="btn-print">
-                <button onclick="window.print()"> Imprimer le rapport</button>
+                <button onclick="window.print()">Imprimer le rapport</button>
             </div>
             <a href="/history" class="btn-back">← Retour à l'historique</a>
         </div>
