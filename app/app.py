@@ -1,6 +1,4 @@
-# ============================================================
-# APPLICATION FLASK_Diabet_Predict
-# ============================================================
+#  APPLICATION FLASK_Diabet_Predict
 
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 import numpy as np
@@ -9,47 +7,20 @@ import os
 import sqlite3
 from datetime import datetime
 
-# ============================================================
-# CONFIGURATION (CHEMINS DYNAMIQUES)
-# ============================================================
+BASE_DIR = 'C:/Users/Pigeon/Desktop/Projet_Diabete_App'
+TEMPLATE_DIR = os.path.join(BASE_DIR, 'app', 'templates')
+DB_PATH = os.path.join(BASE_DIR, 'database', 'predictions.db')
+MODEL_PATH = os.path.join(BASE_DIR, 'models', 'best_model.pkl')
+SCALER_PATH = os.path.join(BASE_DIR, 'models', 'scaler.pkl')
 
-# 1. Dossier où se trouve ce fichier (app.py)
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
-# 2. Racine du projet (dossier parent de /app/)
-PROJECT_ROOT = os.path.dirname(BASE_DIR)
-
-# 3. Chemins des dossiers et fichiers
-TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
-DB_PATH = os.path.join(PROJECT_ROOT, 'database', 'predictions.db')
-MODEL_PATH = os.path.join(PROJECT_ROOT, 'models', 'best_model.pkl')
-SCALER_PATH = os.path.join(PROJECT_ROOT, 'models', 'scaler.pkl')
-
-# 4. Création de l'application Flask
 app = Flask(__name__, template_folder=TEMPLATE_DIR)
 
-print("="*60)
-print("🚀 APPLICATION DE PRÉDICTION DU DIABÈTE")
-print("="*60)
-print(f"📁 BASE_DIR : {BASE_DIR}")
-print(f"📁 PROJECT_ROOT : {PROJECT_ROOT}")
-print(f"📁 DB_PATH : {DB_PATH}")
-print(f"📁 MODEL_PATH : {MODEL_PATH}")
-print(f"📁 SCALER_PATH : {SCALER_PATH}")
+print(" APPLICATION DE PRÉDICTION DU DIABÈTE")
+print("--"*30)
 
-# 5. Chargement du modèle et du scaler
-try:
-    model = joblib.load(MODEL_PATH)
-    scaler = joblib.load(SCALER_PATH)
-    print("✅ Modèle chargé avec succès !")
-except Exception as e:
-    print(f"❌ Erreur de chargement : {e}")
-    model = None
-    scaler = None
-
-# ============================================================
-# FONCTIONS BASE DE DONNÉES
-# ============================================================
+model = joblib.load(MODEL_PATH)
+scaler = joblib.load(SCALER_PATH)
+print(f" Modèle chargé")
 
 def get_connection():
     if not os.path.exists(DB_PATH):
@@ -185,9 +156,8 @@ def update_patient(prediction_id, data):
     conn.close()
     return False
 
-# ============================================================
-# ROUTES
-# ============================================================
+# LES ROUTES
+
 
 @app.route('/')
 def home():
@@ -225,14 +195,14 @@ def predict():
         patient_id = save_patient(data)
         save_prediction(patient_id, prediction, probability)
         if prediction == 0:
-            result = "Non-diabétique ✅"
+            result = "Non-diabétique "
             color = "green"
             advice = "Vous êtes en bonne santé ! Continuez à maintenir un mode de vie sain."
             result_class = "success"
         else:
-            result = "Diabétique ⚠️"
+            result = "Diabétique "
             color = "red"
-            advice = "⚠️ Consultez un médecin pour un diagnostic plus approfondi."
+            advice = " Consultez un médecin pour un diagnostic plus approfondi."
             result_class = "danger"
         stats = get_statistics()
         return render_template('form.html', 
@@ -281,12 +251,12 @@ def rapport(patient_id):
         return "Patient non trouvé", 404
     data = dict(patient)
     if data['prediction'] == 0:
-        result = "Non-diabétique ✅"
+        result = "Non-diabétique "
         color = "green"
         advice = "Le patient est en bonne santé ! Continuez à maintenir un mode de vie sain."
         result_class = "success"
     else:
-        result = "Diabétique ⚠️"
+        result = "Diabétique "
         color = "red"
         advice = "Le patient présente un risque de diabète. Consultez un médecin."
         result_class = "danger"
@@ -317,6 +287,9 @@ def patients():
     patients_list = get_all_patients()
     return render_template('patients.html', patients=patients_list)
 
+#  ROUTE RAPPORT GLOBAL
+
+
 @app.route('/rapport_global')
 def rapport_global():
     """Rapport global avec toutes les statistiques."""
@@ -335,6 +308,9 @@ def rapport_global():
                          predictions=predictions,
                          total=len(predictions),
                          date=date)
+
+# ROUTES POUR LES ACTIONS
+
 
 @app.route('/delete/<int:prediction_id>')
 def delete_prediction_route(prediction_id):
@@ -383,9 +359,8 @@ def edit_prediction(prediction_id):
     except Exception as e:
         return f"Erreur : {str(e)}", 500
 
-# ============================================================
 # API ENDPOINTS
-# ============================================================
+
 
 @app.route('/api/predict', methods=['POST'])
 def api_predict():
@@ -415,19 +390,19 @@ def api_stats():
     stats = get_statistics()
     return jsonify(stats)
 
-# ============================================================
-# LANCEMENT DE L'APPLICATION
-# ============================================================
+#  LANCEMENT DE L'APPLICATION
+
 
 if __name__ == '__main__':
-    print("\n" + "="*60)
-    print("🚀 APPLICATION LANCÉE !")
-    print("="*60)
-    print("📌 Accéder à l'application : http://127.0.0.1:5000")
-    print("📌 Formulaire : http://127.0.0.1:5000/form")
-    print("📌 Historique : http://127.0.0.1:5000/history")
-    print("📌 Statistiques : http://127.0.0.1:5000/stats")
-    print("📌 Patients : http://127.0.0.1:5000/patients")
-    print("📌 Rapport Global : http://127.0.0.1:5000/rapport_global")
-    print("="*60)
+
+    print(" APPLICATION LANCÉE !")
+    print("--"*20)
+    
+    print(" Accéder à l'application : http://127.0.0.1:5000")
+    print(" Formulaire : http://127.0.0.1:5000/form")
+    print(" Historique : http://127.0.0.1:5000/history")
+    print(" Statistiques : http://127.0.0.1:5000/stats")
+    print(" Patients : http://127.0.0.1:5000/patients")
+    print(" Rapport Global : http://127.0.0.1:5000/rapport_global")
+
     app.run(debug=True, host='0.0.0.0', port=5000)
